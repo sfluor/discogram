@@ -9,6 +9,7 @@ class Discogram(discord.Client):
         super().__init__()
         self.telegram_token = telegram_token
         self.chat_id = chat_id
+        self.connected_users = 0
 
     def send_tg_message(self, msg):
         data = {"chat_id": self.chat_id, "text": msg}
@@ -19,13 +20,15 @@ class Discogram(discord.Client):
         print('Logged on as %s', self.user)
 
     async def on_voice_state_update(self, member, before, after):
-        if before.channel == None and after.channel != None:
+        if before.channel == None and after.channel != None and self.connected_users == 0:
             msg = f"User: {member.name} connected to the channel: {after.channel.name}"
+            self.connected_users += 1
             self.send_tg_message(msg)
 
         elif before.channel != None and after.channel == None:
-            msg = f"User: {member.name} disconnected from the channel: {before.channel.name}"
-            self.send_tg_message(msg)
+            self.connected_users -= 1
+#             msg = f"User: {member.name} disconnected from the channel: {before.channel.name}"
+#             self.send_tg_message(msg)
 
 if __name__ == '__main__':
     with open("config.json", "r") as f:
