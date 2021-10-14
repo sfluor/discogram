@@ -1,6 +1,6 @@
 import json
 import discord
-import requests
+import httpx
 
 TG_URL = "https://api.telegram.org/bot{}/sendMessage"
 
@@ -14,7 +14,7 @@ class Discogram(discord.Client):
     def send_tg_message(self, msg):
         data = {"chat_id": self.chat_id, "text": msg}
         print(f"Sending: {msg}")
-        print(requests.post(TG_URL.format(self.telegram_token), data=data).text)
+        print(httpx.post(TG_URL.format(self.telegram_token), data=data).text)
 
     async def on_ready(self):
         print('Logged on as %s', self.user)
